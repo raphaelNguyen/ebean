@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.tests.model.basic.Customer;
 import org.tests.model.basic.Order;
 import org.tests.model.basic.ResetBasicData;
+import org.tests.model.composite.DataWithFormulaMain;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -393,5 +394,13 @@ public class TestQueryFilterMany extends BaseTestCase {
     } else {
       assertSql(sql.get(0)).contains(" from o_customer t0 left join contact t1 on t1.customer_id = t0.id where (t1.id is null or ((t1.first_name is not null and lower(t1.email) like ? escape'|'))) order by t0.id; --bind(rob%)");
     }
+  }
+
+  @Test
+  public void testFilterManyComposite() {
+    DB.find(DataWithFormulaMain.class)
+      .where()
+      .filterMany("metaData").eq("metaKey", "")
+      .findList();
   }
 }
